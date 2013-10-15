@@ -27,7 +27,7 @@ suite('enqueue', function() {
     }
 
     subject.enqueue(
-      require.resolve('./passing_task.js'),
+      'passing_task.js',
       2000,
       {},
       function(err, queueId, taskId) {
@@ -47,7 +47,7 @@ suite('enqueue', function() {
     }
 
     subject.enqueue(
-      require.resolve('./passing_task.js'),
+      'passing_task.js',
       2000,
       {},
       taskIdCheck);
@@ -60,10 +60,10 @@ suite('enqueue', function() {
           string: 'Hello world'
       },
       timeout = 2000,
-      module = require.resolve('./passing_task.js');
+      module = 'passing_task.js';
 
     subject.enqueue(
-      require.resolve('./passing_task.js'),
+      'passing_task.js',
       timeout,
       options,
       function(err, queueId, taskId) {
@@ -91,7 +91,7 @@ suite('enqueue', function() {
     }
 
     subject.enqueue(
-      require.resolve('./passing_task.js'),
+      'passing_task.js',
       2000,
       {},
       function(err, queueId, taskId) {
@@ -102,7 +102,7 @@ suite('enqueue', function() {
 
   test('store task without options', function(done) {
     subject.enqueue(
-      require.resolve('./passing_task.js'),
+      'passing_task.js',
       2000,
       {},
       function(err, queueId, taskId) {
@@ -111,6 +111,19 @@ suite('enqueue', function() {
           assert.equal(obj.options, rb.NO_OPTIONS);
           done(err);
         });
+      });
+  });
+
+  test('invalid module name', function(done) {
+    subject.enqueue(
+      '/path/that/is/absolute.js',
+      2000,
+      {},
+      function(err, queueId, taskId) {
+        var expErrMsg = 'should not be a path';
+        assert.ok(err);
+        assert.ok(-1 !== err.message.indexOf(expErrMsg));
+        done();
       });
   });
 
@@ -125,7 +138,7 @@ suite('enqueue', function() {
       module = require.resolve('./passing_task.js');
 
     subject.enqueue(
-      require.resolve('./passing_task.js'),
+      'passing_task.js',
       timeout,
       options,
       function(err, queueId, taskId) {
