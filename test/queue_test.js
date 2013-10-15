@@ -5,6 +5,8 @@ var redis = require('redis'),
     rb = require('../lib/refried_beans');
 
 suite('enqueue', function() {
+  // This suite is missing tests for the API returning
+  // errors :/
 
   var subject = require('../lib/queue.js');
 
