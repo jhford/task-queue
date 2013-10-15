@@ -20,34 +20,37 @@ suite('enqueue', function() {
   });
 
   test('inserts one item in list', function(done) {
+
+    function lengthCheck(err, data) {
+      assert.ok(data === 1, 'inserts one item');
+      done(err);
+    }
+
     subject.enqueue(
       require.resolve('./passing_task.js'),
       2000,
       {},
       function(err, queueId, taskId) {
         if (err) done(err);
-        var r = redis.createClient();
-        r.llen(queueId, function(err, data) {
-          if (err) done(err);
-          assert.ok(data === 1, 'inserts one item');
-          done(err);
-        });
+        r.llen(queueId, lengthCheck);
       });
   });
 
   test('tracks the correct uuid', function(done) {
+
+    function taskIdCheck(err, queueId, taskId) {
+      if (err) done(err);
+      r.lrange(queueId, 0, 0, function(err, data) {
+        assert.equal(taskId, data, 'id of task is correct');
+        done(err);
+      });
+    }
+
     subject.enqueue(
       require.resolve('./passing_task.js'),
       2000,
       {},
-      function(err, queueId, taskId) {
-        if (err) done(err);
-        var r = redis.createClient();
-        r.lrange(queueId, 0, 0, function(err, data) {
-          assert.equal(taskId, data, 'id of task is correct');
-          done(err);
-        });
-      });
+      taskIdCheck);
   });
 
   test('stores correct data', function(done) {
