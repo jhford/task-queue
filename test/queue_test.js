@@ -15,6 +15,10 @@ suite('enqueue', function() {
     r.flushall();
   });
 
+  teardown(function() {
+    r.end();
+  });
+
   test('inserts one item in list', function(done) {
     subject.enqueue(
       require.resolve('./passing_task.js'),
@@ -70,6 +74,26 @@ suite('enqueue', function() {
             done(err);
           });
         });
+      });
+  });
+
+  test('will publish message', function(done) {
+    r.subscribe(rb.PENDING_QUEUE);
+
+    function onMessage(channel, message) {
+      assert.equal(channel, rb.PENDING_QUEUE);
+      assert.equal(message, rb.TASK_QUEUED);
+      r.end();
+      done();
+    }
+
+    subject.enqueue(
+      require.resolve('./passing_task.js'),
+      2000,
+      {},
+      function(err, queueId, taskId) {
+        if (err) done(err);
+        r.on('message', onMessage);
       });
   });
 
