@@ -73,6 +73,20 @@ suite('enqueue', function() {
       });
   });
 
+  test('store task without options', function(done) {
+    subject.enqueue(
+      require.resolve('./passing_task.js'),
+      2000,
+      {},
+      function(err, queueId, taskId) {
+        if (err) done(err);
+        r.hgetall(taskId, function(err, obj) {
+          assert.equal(obj.options, rb.NO_OPTIONS);
+          done(err);
+        });
+      });
+  });
+
   test('cannot store nested objects', function(done) {
 
     var options = {
