@@ -1,0 +1,50 @@
+#! /usr/bin/env node
+
+var program = require('commander');
+
+program.
+  usage('module timeout key:value').
+  parse(process.argv);
+
+var queue = require('../index');
+
+if (program.args.length < 2) {
+  console.error('Must specify at least module and timeout');
+  program.outputHelp();
+  process.exit(1);
+}
+
+if (isNaN(parseInt(program.args[1], 10))) {
+  console.error('Timeout must be integer');
+}
+
+var options = {};
+program.args.slice(2).forEach(function(x) {
+  keyValue = x.split(':');
+  if (2 != keyValue.length) {
+  program.outputHelp();
+  process.exit(1);
+  }
+  options[keyValue[0]] = keyValue[1];
+});
+
+var task = {
+  module: program.args[0],
+  timeout: program.args[1],
+  options: options
+};
+
+queue.enqueue(
+  program.args[0],
+  program.args[1],
+  options,
+  function(err, queueId, taskId) {
+    if (err) {
+      console.error("Error inserting task into queue");
+      console.error(err);
+      process.exit(1);
+    }
+    console.log("Inserted task %s into %s queue", taskId, queueId);
+});
+
+

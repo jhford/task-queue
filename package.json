@@ -1,0 +1,22 @@
+{
+  "name": "task-queue",
+  "version": "0.0.0",
+  "description": "task-queue",
+  "repository": "https://github.com/mozilla-b2g-bot/task-queue",
+  "main": "index.js",
+  "scripts": {
+    "test": "make"
+  },
+  "license": "Apache2",
+  "devDependencies": {
+    "mocha": "~1.13.0",
+    "sinon": "~1.7.3"
+  },
+  "dependencies": {
+    "debug": "~0.7.2",
+    "redis": "~0.8.6",
+    "hiredis": "~0.1.15",
+    "uuid": "~1.4.1",
+    "commander": "~2.0.0"
+  }
+}
