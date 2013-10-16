@@ -37,6 +37,34 @@ suite('enqueue', function() {
       });
   });
 
+  test('inserts two items in list', function(done) {
+
+    function lengthCheck(err, data) {
+      assert.ok(data === 2, 'inserts two items');
+      done(err);
+    }
+
+    function firstEnqueue(err, queueId, taskId) {
+      if (err) done(err);
+      queue.enqueue(
+        'passing_task.js',
+        2000,
+        {},
+        secondEnqueue);
+    }
+
+    function secondEnqueue(err, queueId, taskId) {
+      if (err) done(err);
+      r.llen(queueId, lengthCheck);
+    }
+
+    queue.enqueue(
+      'passing_task.js',
+      2000,
+      {},
+      firstEnqueue);
+  });
+
   test('tracks the correct uuid', function(done) {
 
     function taskIdCheck(err, queueId, taskId) {
