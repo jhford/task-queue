@@ -2,15 +2,14 @@
 
 var redis = require('redis'),
     debug = require('debug')('queueTest'),
-    rb = require('../lib/refried_beans');
+    rb = require('../lib/refried_beans'),
+    queue = require('../lib/queue.js');
 
 suite('enqueue', function() {
   // This suite is missing tests for the API returning
   // errors :/
 
-  var subject = require('../lib/queue.js');
-
-  var r;
+  var r; // For our redis client obj
 
   setup(function() {
     r = redis.createClient();
@@ -28,7 +27,7 @@ suite('enqueue', function() {
       done(err);
     }
 
-    subject.enqueue(
+    queue.enqueue(
       'passing_task.js',
       2000,
       {},
@@ -48,7 +47,7 @@ suite('enqueue', function() {
       });
     }
 
-    subject.enqueue(
+    queue.enqueue(
       'passing_task.js',
       2000,
       {},
@@ -64,7 +63,7 @@ suite('enqueue', function() {
       timeout = 2000,
       module = 'passing_task.js';
 
-    subject.enqueue(
+    queue.enqueue(
       'passing_task.js',
       timeout,
       options,
@@ -92,7 +91,7 @@ suite('enqueue', function() {
       done();
     }
 
-    subject.enqueue(
+    queue.enqueue(
       'passing_task.js',
       2000,
       {},
@@ -103,7 +102,7 @@ suite('enqueue', function() {
   });
 
   test('store task without options', function(done) {
-    subject.enqueue(
+    queue.enqueue(
       'passing_task.js',
       2000,
       {},
@@ -117,7 +116,7 @@ suite('enqueue', function() {
   });
 
   test('invalid module name', function(done) {
-    subject.enqueue(
+    queue.enqueue(
       '/path/that/is/absolute.js',
       2000,
       {},
@@ -139,7 +138,7 @@ suite('enqueue', function() {
       timeout = 2000,
       module = require.resolve('./passing_task.js');
 
-    subject.enqueue(
+    queue.enqueue(
       'passing_task.js',
       timeout,
       options,
